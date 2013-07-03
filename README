@@ -1,0 +1,9 @@
+Module for Puppet
+------------------------
+mv_theeye_probes
+
+Dependencies : 
+- https://github.com/puppetlabs/puppetlabs-nodejs
+- https://github.com/puppetlabs/puppetlabs-vcsrepo
+- https://github.com/puppetlabs/puppetlabs-apt
+- https://github.com/puppetlabs/puppetlabs-stdlib
