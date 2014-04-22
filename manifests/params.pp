@@ -2,6 +2,6 @@
 class mv_theeye_probes::params {
 
 	$packages 				= ['git-core', 'vnstat']
-	$service_name 		= ''
+	$service_name 		= 'theeye-probes'
 	$config_path 			= '/opt/theeye-probes'
 }

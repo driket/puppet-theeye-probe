@@ -1,0 +1,77 @@
+#! /bin/bash
+#
+# THIS FILE IS MANAGED BY PUPPET
+# <%= file %>
+#
+# /etc/init.d/mv-netfilter
+#
+
+PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
+NAME="theeye-probes"
+NOHUP="/usr/bin/nohup"
+COFFEE="<%= @config_path %>/node_modules/.bin/coffee"
+THEEYE="<%= @config_path %>/main.js.coffee"
+APPDIR="<%= @config_path %>"
+
+. /lib/lsb/init-functions
+
+function stop
+{
+  PROC=`/bin/ps aux | /bin/grep $THEEYE | /bin/grep -v 'grep' | awk '{print $2}'`
+  kill -9 $PROC
+  return $?
+}
+
+function start
+{
+  ensure_log_dir_present
+  cd $APPDIR ; $NOHUP $COFFEE $THEEYE &>log/theeye.log </dev/null &
+  return $?
+}
+
+function status
+{
+  /bin/ps aux | /bin/grep $THEEYE | /bin/grep -v 'grep' &>/dev/null
+  return $?
+}
+
+function ensure_log_dir_present
+{
+  if [ ! -d $APPDIR/log ]; then
+    mkdir -p $APPDIR/log
+  fi 
+}
+
+case "$1" in
+  start)
+    log_begin_msg "Starting $NAME"
+    start
+    log_end_msg $?
+    ;;
+  stop)
+    log_begin_msg "Stopping $NAME"
+    stop
+    log_end_msg $?
+    ;;
+  restart)
+    log_begin_msg "Restarting $NAME"
+    stop
+    start 
+    log_end_msg $?
+  ;; 
+  status)
+    if status; then
+      log_success_msg "$NAME is running"
+      exit 0
+    else
+      log_failure_msg "$NAME is not running"
+      exit 1
+    fi
+    ;;
+  *)
+    echo "Usage: /etc/init.d/$NAME {start|stop|status}"
+    exit 1
+    ;;
+esac
+
+exit 0
